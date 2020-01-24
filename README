@@ -15,13 +15,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------
 OVERVIEW:
-	This creates a build environment 
+	This creates a build environment You will need to fill the HOST directory with
+	the "host" system to chroot to.  I use Raspian buster lite img file mounted
+	at HOST
 	
 #-----------------------------------------------------------------------------	
 LAYOUT:
 	/usr/src/Overlay
-		+ 	bash_profile	-	root user in chroot
-		+	bashrc		-	root user in chroot
 		+	CHROOT		-	mount point for overlay chroots here
 		+	HOST		-	host system clone   lower dir overlayfs
 		+	LFS		-	Put your stuff to work on here 
@@ -30,56 +30,17 @@ LAYOUT:
 		+	Makefile		-	The big deal
 		+	WORK		-	work dir for overlayfs
 		+	README		-	This file
+		+	unmount.sh	-	script to un mount overlayfs
 #-----------------------------------------------------------------------------
 REQUIREMENTS:
 	1.	overlayfs enabled kernel
 	2.	sudo and configuerd for your user
 #-----------------------------------------------------------------------------
 PROCEDURE:
-	git clone https://github.com/baho-utot/Overlay.git
+	git clone https://github.com/Scott-Andrews-Github/overlay.git
 	
 	rsync -var /home/pi/Projects/Overlay .
 	cd Overlay
-	
-### FIXME:
-	make setup - remove cp to HOST
-	make host - create a HOST.img file if you don't have one
-	sudo make chroot
-	source /root/.bash_profile
-	/bin/bash --login That gives you a clean root user environment to work with.
-
-### Building LFS:
-	base build:
-	rename HOST HOST.original
-	rename LFS LFS.original
-	mkdir HOST
-	mkdir LFS
-	rsync -var LFS/mnt/lfs/* HOST/
-	mkdir LFS
-	cp Bash_profile LFS/root/.bash_profile
-	cp Bashrc LFS/root/.bashrc
+	make setup
 	make chroot
-	/tools/bin/bash --login
-	Go build
-
-	#	make Toolchain.img
-	dd if=/dev/zero of=Toolchain.img bs=1M count=5120
-	mkfs.ext4 Toolchain.img
-	mount -t ext4 Toolchain.img CHROOT
-	cp -var LFS/mnt/lfs/* CHROOT/
-	mv CHROOT/usr/src/LFS/SOURCES CHROOT/
-	rm CHROOT/usr/src/LFS
-	rm -rf CHROOT/root
-	mkdir CHROOT/root
-	cp bash_profile CHROOT/root/.bash_profile
-	cp bashrc CHROOT/root/.bashrc
-	umount CHROOT
 	
-	Mount Toolchain.img at HOST
-	clean LFS
-	make chroot
-	/tools/bin/bash --login
-	/bin/bash --login
-	git clone LFS to CHROOT/usr/src/LFS
-	copy SOURCES/ to CHROOT/usr/src/LFS/SOURCES/
-	Go build
