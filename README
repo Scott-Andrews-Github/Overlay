@@ -38,8 +38,6 @@ REQUIREMENTS:
 #-----------------------------------------------------------------------------
 PROCEDURE:
 	git clone https://github.com/Scott-Andrews-Github/overlay.git
-	
-	rsync -var /home/pi/Projects/Overlay .
 	cd Overlay
 	make setup
 	make chroot
