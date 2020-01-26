@@ -54,7 +54,7 @@ chroot:
 	@mountpoint -q CHROOT/sys || mount -t sysfs sysfs CHROOT/sys
 	@mountpoint -q CHROOT/run || mount -t tmpfs tmpfs CHROOT/run
 	@echo 'Chrooting'
-	@chroot CHROOT env -i HOME=$$HOME TERM=$$TERM PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin PS1='(Overlay) \u:\w\$$ ' /bin/bash --noprofile --norc --login +h
+	@chroot CHROOT env -i HOME=$$HOME TERM=$$TERM PATH=/bin:/usr/bin:/sbin:/usr/sbin PS1='(Overlay) \u:\w\$$ ' /bin/bash --noprofile --norc --login +h
 	@echo "Unmounting Virtual Kernel File Systems: "
 	@mountpoint -q CHROOT/run  && umount CHROOT/run || true
 	@mountpoint -q CHROOT/sys  && umount CHROOT/sys || true
